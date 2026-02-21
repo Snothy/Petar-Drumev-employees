@@ -1,36 +1,31 @@
-import { parse, isValid } from "date-fns";
+import moment from "moment";
 import type { DateRange } from "../types/datetime";
 
-const DATE_FORMATS = [
-  "yyyy-MM-dd",
-  "dd/MM/yyyy",
-  "MM/dd/yyyy",
-  "yyyy/MM/dd",
-  "dd.MM.yyyy",
-  "MMM d, yyyy",
+const commonFormats = [
+  moment.ISO_8601,
+  "YYYY-MM-DD",
+  "DD/MM/YYYY",
+  "MM/DD/YYYY",
+  "DD.MM.YYYY",
 ];
 
 export const parseDate = (dateStr: string): Date => {
   const trimmed = dateStr.trim();
 
-  // If NULL -> default to current date
   if (!trimmed || trimmed.toLowerCase() === "null") {
     return new Date();
   }
 
-  // Try listed formats
-  for (const formatStr of DATE_FORMATS) {
-    const parsed = parse(trimmed, formatStr, new Date());
-    if (isValid(parsed)) {
-      return parsed;
-    }
+  const m = moment(trimmed, commonFormats, true);
+
+  if (m.isValid()) {
+    return m.toDate();
   }
 
-  // If above fails
-  const fallbackDate = new Date(trimmed);
+  const m2 = moment(trimmed);
 
-  if (isValid(fallbackDate)) {
-    return fallbackDate;
+  if (m2.isValid()) {
+    return m2.toDate();
   }
 
   return new Date();
