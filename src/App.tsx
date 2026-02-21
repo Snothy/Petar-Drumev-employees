@@ -1,37 +1,39 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import "./App.css";
 import type { EmployeeCSVRecord } from "./types/employee";
-import FileUploader from "./components/FileUploader";
+import FileUploader from "./components/FileUploader/FileUploader";
 import { findWinningPair } from "./helpers/preprocessEmployeeData";
+import Table from "./components/Table/Table";
 
 function App() {
   const [employeeData, setEmployeeData] = useState<EmployeeCSVRecord[]>([]);
 
-  if (!employeeData.length) {
-    return (
-      <div>
-        <h1>Identify Project Overlap</h1>
+  const winningPair = useMemo(() => {
+    if (!employeeData.length) {
+      return null;
+    }
 
-        <FileUploader onUpload={(data) => setEmployeeData(data)} />
-      </div>
-    );
-  }
-
-  const employeePair = findWinningPair(employeeData);
+    return findWinningPair(employeeData);
+  }, [employeeData]);
 
   return (
-    <div>
-      <h1>Identify Project Overlap</h1>
-      {employeePair ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          <div>Winning Pair</div>
-          <div> EmpId1: {employeePair.empId1}</div>
-          <div>EmpId2: {employeePair.empId2}</div>
-          <div>
-            Total Days Worked Together: {employeePair.totalDaysWorkedTogether}{" "}
-            days
-          </div>
+    <div className="app-container">
+      <div className="header-container">
+        <h1>Find winning pair</h1>
+        <div>Find the pair of employees who have worked together the most</div>
+      </div>
+
+      <div className="uploader-container">
+        <FileUploader onUpload={(data) => setEmployeeData(data)} />
+      </div>
+
+      {winningPair ? (
+        <div
+          key={`${winningPair.empId1}-${winningPair.empId2}-${winningPair.totalDaysWorkedTogether}`}
+          className="table-container"
+        >
+          <Table employeePair={winningPair} />
         </div>
       ) : null}
     </div>
