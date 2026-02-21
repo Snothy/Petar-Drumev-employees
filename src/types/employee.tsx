@@ -11,3 +11,13 @@ export type Employee = {
   dateFrom: Date;
   dateTo: Date;
 };
+
+export type EmployeePair = {
+  empId1: number;
+  empId2: number;
+  totalDaysWorkedTogether: number;
+  projects: {
+    projectId: number;
+    daysWorkedTogether: number;
+  }[];
+};

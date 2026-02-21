@@ -1,4 +1,5 @@
 import Papa from "papaparse";
+
 import type { EmployeeCSVRecord } from "../types/employee";
 
 interface FileUploaderProps {
@@ -6,6 +7,9 @@ interface FileUploaderProps {
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({ onUpload }) => {
+  // TODO: maybe add validation for columns
+  // logic would fail if the data in the csv is incorrectly formatted
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
